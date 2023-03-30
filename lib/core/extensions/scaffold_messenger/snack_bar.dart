@@ -1,3 +1,4 @@
+import 'package:crewin_flutter/core/init/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 
@@ -20,7 +21,7 @@ extension SnackBarExtension on GlobalKey<ScaffoldState> {
       message,
       true,
       backColor: backColor,
-      textColor: textColor,
+      textColor: textColor ?? Colors.white,
     );
   }
 
@@ -33,7 +34,7 @@ extension SnackBarExtension on GlobalKey<ScaffoldState> {
       message,
       false,
       backColor: backColor,
-      textColor: textColor,
+      textColor: textColor ?? Colors.white,
     );
   }
 
@@ -43,11 +44,11 @@ extension SnackBarExtension on GlobalKey<ScaffoldState> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           shape: roundedRectangleBorder,
+          duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: context.colorScheme.primary,
           content: Center(
             child: CircularProgressIndicator(
-              color: context.colorScheme.secondary,
+              color: AppColors.instance.whiteColor,
             ),
           ),
         ),
@@ -74,7 +75,10 @@ extension SnackBarExtension on GlobalKey<ScaffoldState> {
             ),
             title: buildMessage(currentState?.context, message, textColor),
             trailing: buildCloseButton(textColor),
-            tileColor: backColor ?? (isGreat ? Colors.green : Colors.red),
+            tileColor: backColor ??
+                (isGreat
+                    ? AppColors.instance.greenColor
+                    : AppColors.instance.redColor),
           ),
           behavior: SnackBarBehavior.floating,
           padding: EdgeInsets.zero,
@@ -100,14 +104,14 @@ extension SnackBarExtension on GlobalKey<ScaffoldState> {
           ScaffoldMessenger.of(context).clearSnackBars();
         }
       },
-      textColor: textColor ?? context.colorScheme.secondary,
+      textColor: textColor ?? Colors.white,
     );
   }
 
   Icon buildIcon(IconData? icon, Color? textColor) {
     return Icon(
       icon,
-      color: textColor ?? context.colorScheme.secondary,
+      color: textColor ?? Colors.white,
     );
   }
 }

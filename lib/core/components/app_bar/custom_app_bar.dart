@@ -1,3 +1,4 @@
+import 'package:crewin_flutter/core/init/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:kartal/kartal.dart';
 
@@ -19,8 +20,12 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     return AppBar(
       leading: Center(child: CustomBackButton(onTap: onBackTap)),
       title: buildTitle(context),
-      backgroundColor: Colors.transparent,
-      // centerTitle: true,
+      backgroundColor: context.appTheme.primaryColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(context.mediumValue * .5),
+        ),
+      ),
       elevation: 0,
     );
   }
@@ -29,8 +34,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     return Text(
       pageTitle,
       style: context.textTheme.titleLarge?.copyWith(
-        color: context.colorScheme.primary,
         fontWeight: FontWeight.w600,
+        color: context.colorScheme.onBackground,
       ),
     );
   }

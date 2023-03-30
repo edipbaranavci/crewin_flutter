@@ -20,12 +20,12 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: context.lowBorderRadius,
-      splashColor: color?.withOpacity(.6),
-      onTap: onTap,
-      child: Tooltip(
-        message: toolTip ?? '',
+    return Tooltip(
+      message: toolTip ?? '',
+      child: InkWell(
+        borderRadius: context.lowBorderRadius,
+        splashColor: color?.withOpacity(.6),
+        onTap: onTap,
         child: Padding(
           padding: padding ?? context.paddingLow,
           child: Icon(

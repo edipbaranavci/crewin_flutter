@@ -15,12 +15,27 @@ class GeneralAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        pageTitle,
-        style: context.textTheme.titleLarge?.copyWith(
-          color: context.colorScheme.primary,
-        ),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            pageTitle,
+            style: context.textTheme.titleLarge?.copyWith(
+              color: context.colorScheme.primary,
+            ),
+          ),
+          SizedBox(
+            width: context.width * .5,
+            child: Center(
+              child: Divider(
+                color: context.colorScheme.secondary,
+                thickness: 1,
+              ),
+            ),
+          )
+        ],
       ),
+      elevation: 0,
       actions: actions,
       centerTitle: true,
     );

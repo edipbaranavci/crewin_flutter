@@ -28,7 +28,7 @@ class CustomBackButton extends StatelessWidget {
           child: Icon(
             iconData ?? Icons.chevron_left,
             size: size,
-            color: color ?? context.colorScheme.primary,
+            color: color ?? context.colorScheme.onBackground,
           ),
         ),
       ),

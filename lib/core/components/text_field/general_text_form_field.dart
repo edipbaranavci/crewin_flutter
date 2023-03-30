@@ -1,3 +1,4 @@
+import 'package:crewin_flutter/core/init/theme/app_colors.dart';
 import 'package:kartal/kartal.dart';
 import 'package:flutter/material.dart';
 
@@ -85,6 +86,8 @@ class GeneralTextFormField extends StatelessWidget {
   }
 
   InputBorder get _inputBorder {
-    return const OutlineInputBorder(borderSide: BorderSide(width: 1.5));
+    return OutlineInputBorder(
+      borderSide: BorderSide(width: 1.5, color: AppColors.instance.primary),
+    );
   }
 }

@@ -1,0 +1,1 @@
+enum CollectionEnums { users, foods }
