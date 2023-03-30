@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "275566479175",
+    "project_id": "crewin-flutter",
+    "storage_bucket": "crewin-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275566479175:android:24b4df4c75cbc34049ae62",
+        "android_client_info": {
+          "package_name": "com.example.crewin_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275566479175-t6hu4ksgrmgpnk0nikrhv4dsitm2gvs4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH0IMAG58TDQkF_ys7gRefa9tg4NbVyOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275566479175-t6hu4ksgrmgpnk0nikrhv4dsitm2gvs4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
