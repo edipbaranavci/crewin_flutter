@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crewin_flutter/core/components/button/custom_icon_button.dart';
+import 'package:crewin_flutter/features/views/food_view/view/food_view_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kartal/kartal.dart';
@@ -74,7 +75,10 @@ class _HomeView extends StatelessWidget {
                       model: FoodModel.fromJson(data),
                       onDeleteTap: () => cubit.deleteRecipe(docs[index].id),
                       onEditTap: () {},
-                      onViewTap: () {},
+                      onViewTap: () => context.navigateToPage(FoodViewView(
+                        foodModel: FoodModel.fromJson(data),
+                        docId: docs[index].id,
+                      )),
                     );
                   },
                 );
