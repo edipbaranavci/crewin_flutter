@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crewin_flutter/core/components/button/custom_icon_button.dart';
-import 'package:crewin_flutter/features/views/food_view/view/food_view_view.dart';
+import 'package:crewin_flutter/features/views/edit_food/view/edit_food_view.dart';
+import '../../../../core/components/button/custom_icon_button.dart';
+import '../../food_view/view/food_view_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kartal/kartal.dart';
@@ -10,7 +9,6 @@ import 'package:kartal/kartal.dart';
 import '../../../../core/components/app_bar/general_app_bar.dart';
 import '../../../../core/components/button/custom_elevated_text_button.dart';
 import '../../../../core/extensions/context/save_user_model_context_extension.dart';
-import '../../../../cubit/main_cubit.dart';
 import '../../../models/food/food_model.dart';
 import '../../add_food/view/add_food_view.dart';
 import '../cubit/home_cubit.dart';
@@ -32,7 +30,7 @@ class HomeView extends StatelessWidget {
 class _HomeView extends StatelessWidget {
   const _HomeView({Key? key}) : super(key: key);
 
-  final String fabTitle = 'Yeni Tarif Ekle';
+  final String fabTitle = 'Yemek Ekle';
   final String pageTitle = 'Yemek Tariflerim';
   final String errorBuilderTitle = 'Sunucuda Hata Var!';
 
@@ -56,32 +54,34 @@ class _HomeView extends StatelessWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text(errorBuilderTitle);
-                }
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
                   return buildLoadingIndicator();
+                } else {
+                  final docs = snapshot.data!.docs;
+                  if (docs.isEmpty) {
+                    return buildEmptyCard(context);
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    reverse: true,
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      final data = docs[index].data()! as Map<String, dynamic>;
+                      return _Card(
+                        model: FoodModel.fromJson(data),
+                        onDeleteTap: () => cubit.deleteRecipe(docs[index].id),
+                        onEditTap: () => context.navigateToPage(
+                          EditFoodView(docId: docs[index].id),
+                        ),
+                        onViewTap: () => context.navigateToPage(FoodViewView(
+                          foodModel: FoodModel.fromJson(data),
+                          docId: docs[index].id,
+                        )),
+                      );
+                    },
+                  );
                 }
-                final docs = snapshot.data!.docs;
-                if (docs.isEmpty) {
-                  return buildEmptyCard(context);
-                }
-
-                return ListView.builder(
-                  shrinkWrap: true,
-                  reverse: true,
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    final data = docs[index].data()! as Map<String, dynamic>;
-                    return _Card(
-                      model: FoodModel.fromJson(data),
-                      onDeleteTap: () => cubit.deleteRecipe(docs[index].id),
-                      onEditTap: () {},
-                      onViewTap: () => context.navigateToPage(FoodViewView(
-                        foodModel: FoodModel.fromJson(data),
-                        docId: docs[index].id,
-                      )),
-                    );
-                  },
-                );
               },
             );
           } else {

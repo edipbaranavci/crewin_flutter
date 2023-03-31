@@ -1,33 +1,35 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kartal/kartal.dart';
+
+import '../../../../core/components/app_bar/general_app_bar.dart';
 import '../../../../core/components/button/custom_elevated_text_button.dart';
 import '../../../../core/components/button/custom_icon_button.dart';
 import '../../../../core/components/text_field/general_text_form_field.dart';
 import '../../../../core/extensions/context/save_user_model_context_extension.dart';
 import '../../../../core/extensions/string/form_string_extension.dart';
-import 'package:kartal/kartal.dart';
+import '../cubit/edit_food_cubit.dart';
 
-import '../../../../core/components/app_bar/custom_app_bar.dart';
-import '../cubit/add_food_cubit.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-class AddFoodView extends StatelessWidget {
-  const AddFoodView({Key? key}) : super(key: key);
+class EditFoodView extends StatelessWidget {
+  const EditFoodView({Key? key, required this.docId}) : super(key: key);
+  final String docId;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AddFoodCubit>(
-      create: (context) => AddFoodCubit(context.getSaveUserModel),
-      child: const _AddFoodView(),
+    return BlocProvider<EditFoodCubit>(
+      create: (context) => EditFoodCubit(context.getSaveUserModel, docId),
+      child: const _EditFoodView(),
     );
   }
 }
 
-class _AddFoodView extends StatelessWidget {
-  const _AddFoodView({Key? key}) : super(key: key);
+class _EditFoodView extends StatelessWidget {
+  const _EditFoodView({Key? key}) : super(key: key);
 
-  final String pageTitle = 'Yeni Yemek Tarifi';
+  final String pageTitle = 'Yemek Tarifini Düzenle';
+
   final String foodTitleLabel = 'Yemeğin İsmi';
   final String foodMaterialsLabel = 'Malzemeler';
   final String foodDescriptionLabel = 'Tarifi';
@@ -36,41 +38,17 @@ class _AddFoodView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<AddFoodCubit>();
+    final cubit = context.read<EditFoodCubit>();
     return Scaffold(
       key: cubit.scaffoldKey,
-      appBar: CustomAppBar(pageTitle: pageTitle),
+      appBar: GeneralAppBar(pageTitle: pageTitle),
       body: SingleChildScrollView(
         padding: context.horizontalPaddingLow,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildTextFormFieldsColumn(context),
-            BlocBuilder<AddFoodCubit, AddFoodState>(
-              builder: (context, state) {
-                final file = state.file;
-                if (file is File) {
-                  return InkWell(
-                    borderRadius: context.lowBorderRadius,
-                    onTap: () async => await cubit.pickImage(),
-                    child: Padding(
-                      padding: context.paddingLow * .5,
-                      child: ClipRRect(
-                        borderRadius: context.lowBorderRadius,
-                        child: Image.file(file),
-                      ),
-                    ),
-                  );
-                } else {
-                  return CustomIconButton(
-                    iconData: Icons.camera_alt,
-                    color: context.colorScheme.primary,
-                    onTap: () async => await cubit.pickImage(),
-                    size: context.width * .35,
-                  );
-                }
-              },
-            ),
+            buildImage(),
             buildBottomButtons(context)
           ],
         ),
@@ -78,8 +56,60 @@ class _AddFoodView extends StatelessWidget {
     );
   }
 
+  Widget buildImage() {
+    return BlocBuilder<EditFoodCubit, EditFoodState>(
+      builder: (context, state) {
+        final cubit = context.read<EditFoodCubit>();
+        final file = state.file;
+        final imageUrl = state.imageUrl;
+        if (file is File) {
+          return InkWell(
+            borderRadius: context.lowBorderRadius,
+            onTap: () async => await cubit.pickImage(),
+            child: Padding(
+              padding: context.paddingLow * .5,
+              child: ClipRRect(
+                borderRadius: context.lowBorderRadius,
+                child: Image.file(file),
+              ),
+            ),
+          );
+        } else if (imageUrl is String) {
+          return InkWell(
+            borderRadius: context.lowBorderRadius,
+            onTap: () async => await cubit.pickImage(),
+            child: Padding(
+              padding: context.paddingLow * .5,
+              child: ClipRRect(
+                borderRadius: context.lowBorderRadius,
+                child: Image.network(
+                  imageUrl,
+                  errorBuilder: (context, error, stackTrace) {
+                    return CustomIconButton(
+                      iconData: Icons.camera_alt,
+                      color: context.colorScheme.primary,
+                      onTap: () async => await cubit.pickImage(),
+                      size: context.width * .35,
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        } else {
+          return CustomIconButton(
+            iconData: Icons.camera_alt,
+            color: context.colorScheme.primary,
+            onTap: () async => await cubit.pickImage(),
+            size: context.width * .35,
+          );
+        }
+      },
+    );
+  }
+
   Row buildBottomButtons(BuildContext context) {
-    final cubit = context.read<AddFoodCubit>();
+    final cubit = context.read<EditFoodCubit>();
     return Row(
       children: [
         Expanded(
@@ -89,9 +119,9 @@ class _AddFoodView extends StatelessWidget {
           ),
         ),
         context.emptySizedWidthBoxLow3x,
-        BlocListener<AddFoodCubit, AddFoodState>(
+        BlocListener<EditFoodCubit, EditFoodState>(
           listener: (context, state) {
-            if (state.isAdded) {
+            if (state.isUpdated) {
               context.pop();
             }
           },
@@ -99,7 +129,7 @@ class _AddFoodView extends StatelessWidget {
             child: CustomElevatedTextButton(
               onPressed: () {
                 if (cubit.formKey.currentState!.validate()) {
-                  cubit.addFood();
+                  cubit.updateFood();
                 }
               },
               title: saveButtonTitle,
@@ -111,7 +141,7 @@ class _AddFoodView extends StatelessWidget {
   }
 
   Form buildTextFormFieldsColumn(BuildContext context) {
-    final cubit = context.read<AddFoodCubit>();
+    final cubit = context.read<EditFoodCubit>();
     return Form(
       key: cubit.formKey,
       child: Column(

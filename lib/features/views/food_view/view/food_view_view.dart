@@ -1,9 +1,6 @@
-import 'package:crewin_flutter/core/components/app_bar/custom_app_bar.dart';
-import 'package:crewin_flutter/core/components/app_bar/general_app_bar.dart';
-import 'package:crewin_flutter/core/components/button/custom_icon_button.dart';
-import 'package:crewin_flutter/core/extensions/context/save_user_model_context_extension.dart';
-import 'package:crewin_flutter/core/init/navigation/enums/router_enums.dart';
-import 'package:crewin_flutter/core/init/navigation/router/router_service.dart';
+import '../../../../core/components/app_bar/general_app_bar.dart';
+import '../../../../core/components/button/custom_icon_button.dart';
+import '../../../../core/extensions/context/save_user_model_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kartal/kartal.dart';
@@ -35,7 +32,6 @@ class _FoodViewView extends StatelessWidget {
   final String materialsTitle = 'Gerekli Malzemeler:';
   final String recipeTitle = 'Tarif:';
   final String deleteToolMessage = 'Sil';
-  final String editToolMessage = 'Düzenle';
 
   @override
   Widget build(BuildContext context) {
@@ -68,14 +64,6 @@ class _FoodViewView extends StatelessWidget {
 
   GeneralAppBar buildAppBar(BuildContext context) {
     return GeneralAppBar(pageTitle: foodModel.title ?? '', actions: [
-      Center(
-        child: CustomIconButton(
-          iconData: Icons.edit,
-          color: context.colorScheme.primary,
-          onTap: () {},
-          toolTip: editToolMessage,
-        ),
-      ),
       Center(
         child: BlocListener<FoodViewCubit, FoodViewState>(
           listener: (context, state) {
